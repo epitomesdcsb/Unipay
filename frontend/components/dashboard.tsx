@@ -98,6 +98,16 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground">+8% from yesterday</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-2xl font-bold">Create Event</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm font-medium">Edit Event</div>
+              {/* <p className="text-xs text-muted-foreground">+8% from yesterday</p> */}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Daily Earnings Chart */}
