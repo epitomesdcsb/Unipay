@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import Navbar from "@/components/Navbar";
+import axios from 'axios';
 
  
 declare global {
@@ -28,10 +29,10 @@ function ConversionPage() {
 
   useEffect(() => {
     if (rupees !== "") {
-      const coinValue = Number.parseFloat(rupees) / 100;
+      const coinValue = Number.parseFloat(rupees) / 10;
       setCoins(coinValue.toFixed(2));
     } else if (coins !== "") {
-      const rupeeValue = Number.parseFloat(coins) * 100;
+      const rupeeValue = Number.parseFloat(coins) * 10;
       setRupees(rupeeValue.toFixed(2));
     }
   }, [rupees, coins]);
@@ -46,13 +47,34 @@ function ConversionPage() {
 
   const handleRupeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRupees(e.target.value);
-    setCoins((Number.parseFloat(e.target.value) / 100).toFixed(2));
+    setCoins((Number.parseFloat(e.target.value) / 10).toFixed(2));
   };
 
   const handleCoinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCoins(e.target.value);
-    setRupees((Number.parseFloat(e.target.value) * 100).toFixed(2));
+    setRupees((Number.parseFloat(e.target.value) * 10).toFixed(2));
   };
+
+    // const [username, setUsername] = useState("");
+    // const [amount, setAmount] = useState("");
+    const currency = "INR";
+    // const [message, setMessage] = useState("");
+
+  const handleProcced = async () => {
+    try {
+      const response = await axios.post("http://localhost:5001/sample-convert", {
+        username:"test",
+        amount: parseFloat(rupees), // Convert to smallest unit (paise)
+        currency,
+      });
+      console.log(response);
+      alert(JSON.stringify(response));
+      // setMessage(`Order Created: ${response.data.id}`);
+    } catch (error) {
+      console.error(error);
+      // setMessage("Error creating order");
+    }
+  }
 
   const initiatePayment = async () => {
     try {
@@ -71,6 +93,8 @@ function ConversionPage() {
           "Content-Type": "application/json"
         }
       });
+
+      
 
       const order = await response.json();
       const options = {
@@ -182,7 +206,7 @@ function ConversionPage() {
                 <CardContent>
                   <p>Amount in Rupees: ₹{rupees || "0.00"}</p>
                   <p>Equivalent Coins: {coins || "0.00"}</p>
-                  <p>Conversion Rate: 1 Coin = ₹100</p>
+                  <p>Conversion Rate: 1 Coin = ₹10</p>
                 </CardContent>
               </Card>
               <div className="flex items-center space-x-2">
@@ -201,6 +225,7 @@ function ConversionPage() {
               <Button disabled={!agreed || !razorpayLoaded} className="w-full" onClick={initiatePayment}>
                 {razorpayLoaded ? "Proceed to Convert" : "Loading Payment..."}
               </Button>
+              <Button className="cursor-pointer" onClick={handleProcced}>Convert</Button>
             </CardContent>
           </Card>
         </div>
